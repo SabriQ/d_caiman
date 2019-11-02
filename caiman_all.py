@@ -35,10 +35,10 @@ bpl.output_notebook()
 
 import glob
 import re
-import os
-animal_id = '191174'
-notes = '20191030'
-common_dir = os.path.join('/run/user/1000/gvfs/smb-share:server=10.10.46.135,share=share/Qiushou/12_Miniscope/Raw_data/20191030',animal_id,"H*M*S*")
+import os,sys
+animal_id = sys.argv[1]
+notes = '20191102'
+common_dir = os.path.join('/run/user/1000/gvfs/smb-share:server=10.10.46.135,share=share/Qiushou/12_Miniscope/Raw_data/20191102',animal_id,"H*M*S*")
 resultDir = '/home/qiushou/Documents/QS_data/miniscope/miniscope_result'
 msFileList = glob.glob(os.path.join(common_dir,"msCam*.avi"))
 tsFileList = glob.glob(os.path.join(common_dir,"timestamp.dat"))
@@ -72,6 +72,7 @@ msFileList.sort(key=sort_key)
 tsFileList.sort(key=sort_key)
 if test == True:
     msFileList = msFileList[0:2]
+
 print(msFileList,tsFileList)
 
 

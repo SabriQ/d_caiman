@@ -11,14 +11,14 @@ Created on Wed Oct  2 16:05:55 2019
 import glob,os 
 #video_dir = glob.glob(r"")
 #%%
-data_dir = r"/run/user/1000/gvfs/smb-share:server=10.10.46.135,share=share/Qiushou/12_Miniscope/Raw_data/20191031/*"
+data_dir = r"/run/user/1000/gvfs/smb-share:server=10.10.46.135,share=share/Qiushou/12_Miniscope/Raw_data/20191102/*"
 #data_dir2= r"/run/user/1000/gvfs/smb-share:server=10.10.46.135,share=share/zhangna/3. EPM and open field/open_field"
 #all_videolists = glob.glob(data_dir)
 all_videolists = glob.glob(data_dir+r'/*[0-9].mp4')
 #all_videolists2 = glob.glob(data_dir2+r'/*[0-9].mp4')
-#ts_txts  = glob.glob(data_dir+r'/*_ts.txt')
-#tracked_h5s = glob.glob(data_dir+r'/*Deep*.h5')
-print(len(all_videolists))
+ts_txts  = glob.glob(data_dir+r'/*_ts.txt')
+tracked_h5s = glob.glob(data_dir+r'/*Deep*.h5')
+print("all_videos: ",len(all_videolists))
 #print(len(ts_txts))
 #print(len(tracked_h5s))
 #%%
@@ -42,8 +42,8 @@ def dst_videolists(all_videolists,ts_txts,tracked_h5s):
     return [ i for i in all_videolists if i not in ts_videos],[ i for i in all_videolists if i not in tracked_videos]
 
 no_ts_videos, untracked_videos =  dst_videolists(all_videolists,ts_txts,tracked_h5s)
-print(len(no_ts_videos))
-print(len(untracked_videos))
+print("no_ts_videos:",len(no_ts_videos))
+print("untracted_videos: ",len(untracked_videos))
 
 #%%  generate *_ts.txt 
 import platform, subprocess
