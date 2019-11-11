@@ -11,7 +11,7 @@ Created on Wed Oct  2 16:05:55 2019
 import glob,os 
 #video_dir = glob.glob(r"")
 #%%
-data_dir = r"/run/user/1000/gvfs/smb-share:server=10.10.46.135,share=share/Qiushou/12_Miniscope/Raw_data/20191102/*"
+data_dir = r"/run/user/1000/gvfs/smb-share:server=10.10.46.135,share=share/Qiushou/12_Miniscope/Raw_data/20191110/*"
 #data_dir2= r"/run/user/1000/gvfs/smb-share:server=10.10.46.135,share=share/zhangna/3. EPM and open field/open_field"
 #all_videolists = glob.glob(data_dir)
 all_videolists = glob.glob(data_dir+r'/*[0-9].mp4')

@@ -28,14 +28,14 @@ except:
 import bokeh.plotting as bpl
 import holoviews as hv
 bpl.output_notebook()
-
+#%%
 import glob
 import re
 import os,sys
-animal_id = "191082"
+animal_id = "191172"
 notes = 'all'
-common_dir = os.path.join('/home/qiushou/Documents/CHS_data/miniscope/raw_data/*',animal_id,"H*M*S*")
-resultDir = '/home/qiushou/Documents/CHS_data/miniscope/miniscope_results'
+common_dir = os.path.join(r'/run/user/1000/gvfs/smb-share:server=10.10.46.135,share=data_archive/qiushou/miniscope/*',animal_id,"H*M*S*")
+resultDir = '/home/qiushou/Documents/QS_data/miniscope/miniscope_result'
 msFileList = glob.glob(os.path.join(common_dir,"msCam*.avi"))
 tsFileList = glob.glob(os.path.join(common_dir,"timestamp.dat"))
 show_cropped_img = False 
@@ -147,7 +147,7 @@ final_clip.write_videofile(videoconcat,codec='rawvideo',audio=False,threads=8)
 print(f'concatenated video is located at {videoconcat}')
 
 #%% concatenate timestamps of tsFileList
-newpath=r'/home/qiushou/Documents/CHS_data/miniscope/miniscope_results/Results_191082/20191025_142631_all'
+#newpath=r'/home/qiushou/Documents/QS_data/miniscope/miniscope_result/Results_191172/20191110_160835_all'
 ms_ts_name = os.path.join(newpath,'ms_ts.pkl')
 print(ms_ts_name)
 
