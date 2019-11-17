@@ -37,7 +37,7 @@ import glob
 import re
 import os,sys
 animal_id = sys.argv[1]
-notes = '20191111'
+notes = '20191112'
 common_dir = os.path.join('/run/user/1000/gvfs/smb-share:server=10.10.46.135,share=share/Qiushou/12_Miniscope/Raw_data/20191111',animal_id,"H*M*S*")
 resultDir = '/home/qiushou/Documents/QS_data/miniscope/miniscope_result'
 msFileList = glob.glob(os.path.join(common_dir,"msCam*.avi"))

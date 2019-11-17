@@ -32,9 +32,9 @@ bpl.output_notebook()
 import glob
 import re
 import os,sys
-animal_id = "191172"
-notes = 'all'
-common_dir = os.path.join(r'/run/user/1000/gvfs/smb-share:server=10.10.46.135,share=data_archive/qiushou/miniscope/*',animal_id,"H*M*S*")
+animal_id = "191174"
+notes = '20191110-1112all'
+common_dir = os.path.join(r'/run/user/1000/gvfs/smb-share:server=10.10.46.135,share=data_archive/qiushou/miniscope/2019111[0-2]',animal_id,"H*M*S*")
 resultDir = '/home/qiushou/Documents/QS_data/miniscope/miniscope_result'
 msFileList = glob.glob(os.path.join(common_dir,"msCam*.avi"))
 tsFileList = glob.glob(os.path.join(common_dir,"timestamp.dat"))
