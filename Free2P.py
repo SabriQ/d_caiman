@@ -44,7 +44,7 @@ for filename,duration in zip(filenames[0:-1],durations):
     i=i+1
     with open(concat_txt,'a+') as f:
         f.write(f"{info1}\nduration {info2}\n")
-    print(f"\r{i}/{len(durations)} frames",end=" ")
+    print(f"\r{i}/{len(durations)} frames.",end=" ")
 
 last_info = "file "+f"'{os.path.join(dir_path,filenames[-1])}'"
 with open(concat_txt,'a+') as f:

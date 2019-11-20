@@ -24,7 +24,7 @@ def _check_keys(dict):
     for key in dict:
         if isinstance(dict[key], spio.matlab.mio5_params.mat_struct):
             dict[key] = _todict(dict[key])
-    return dict        
+    return dict
 
 def _todict(matobj):
     '''
@@ -44,6 +44,8 @@ import pickle
 with open("ms_ts.pkl","rb") as f:
     ms_ts = pickle.load(f)
     #%%
+from mylab.miniscope.functions import *
+#%%
 ms_mat = loadmat("ms_backup.mat")
 #%%
 ms_mat['ms']['ms_ts']=ms_ts

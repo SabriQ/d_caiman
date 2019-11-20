@@ -167,14 +167,15 @@ if not os.path.exists(ms_ts_name):
     # remporally downsample for each video
     # [i[::3] for i in ts_session][0]
     session_indend=(np.where(np.diff(ttemp)<0)[0]).tolist()
-    session_indend.append(-1)
+#    session_indend.append(-1)
     ts_session_ds=[]
     i0=0
     session_indstart=[]
     for i in range(len(ts_session)):
         session_indstart.append(i0)
-        ts_session_ds.append(ttemp[i0:session_indend[i]])
+        ts_session_ds.append(ttemp[i0:(session_indend[i]+1)])
         i0=session_indend[i]+1
+    ts_session_ds.append(ttemp[(session_indend[-1]+1):])
     ms_ts=np.array(ts_session_ds)    
     with open(ms_ts_name,'wb') as output:
         pickle.dump(ms_ts,output,pickle.HIGHEST_PROTOCOL)
