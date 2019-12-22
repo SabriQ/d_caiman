@@ -11,14 +11,15 @@ Created on Wed Oct  2 16:05:55 2019
 import glob,os 
 #video_dir = glob.glob(r"")
 #%%
-data_dir = r"/run/user/1000/gvfs/smb-share:server=10.10.46.135,share=share/Qiushou/12_Miniscope/Raw_data/20191112/*"
+data_dir = r"/run/user/1000/gvfs/smb-share:server=10.10.46.135,share=lab_members/XuChun/Lab Projects/01_Intra Hippocampus/Miniscope_CFC/RawData/201910*/*/*"
 #data_dir2= r"/run/user/1000/gvfs/smb-share:server=10.10.46.135,share=share/zhangna/3. EPM and open field/open_field"
 #all_videolists = glob.glob(data_dir)
-all_videolists = glob.glob(data_dir+r'/*[0-9].mp4')
+all_videolists = glob.glob(data_dir+r'/*[0-9].AVI')
 #all_videolists2 = glob.glob(data_dir2+r'/*[0-9].mp4')
 ts_txts  = glob.glob(data_dir+r'/*_ts.txt')
 tracked_h5s = glob.glob(data_dir+r'/*Deep*.h5')
 print("all_videos: ",len(all_videolists))
+print(all_videolists)
 #print(len(ts_txts))
 #print(len(tracked_h5s))
 #%%
@@ -62,9 +63,9 @@ def generate_ts_txt(videoPath):
         print(out)
         child.wait()
 #generate_ts_txt(no_ts_videos[0])
-for video in no_ts_videos:
-    generate_ts_txt(video)
-    print(f"{video} is generating ts file...")
+#for video in no_ts_videos:
+#    generate_ts_txt(video)
+#    print(f"{video} is generating ts file...")
 #%% generate  tracked file
 def generate_track_h5(config_path,untracked_videos,suffix=".mp4"):    
     os.environ["DLClight"]='True' # all the child process have this env but not its father process
@@ -74,6 +75,7 @@ def generate_track_h5(config_path,untracked_videos,suffix=".mp4"):
         deeplabcut.plot_trajectories(config_path,untracked_videos)
         deeplabcut.create_labeled_video(config_path,untracked_videos)
 #print(video_dir)
-generate_track_h5(config_path=r'/home/qiushou/Documents/dlcmodels/linear_track_40cm_AB-QS-2019-09-26/config.yaml',untracked_videos=untracked_videos,suffix=".mp4")
+#generate_track_h5(config_path=r'/home/qiushou/Documents/dlcmodels/linear_track_40cm_AB-QS-2019-09-26/config.yaml',untracked_videos=untracked_videos,suffix=".mp4")
+generate_track_h5(config_path=r'/home/qiushou/Documents/dlcmodels/miniscope_fear-CHS-2019-09-26/config.yaml',untracked_videos=untracked_videos,suffix=".AVI")
 #generate_track_h5(config_path=r'/home/qiushou/Documents/dlcmodels/epm-ZN-2019-07-25/config.yaml',untracked_videos=all_videolists,suffix=".mp4")
 #generate_track_h5(config_path=r'/home/qiushou/Documents/dlcmodels/open_field-ZN-2019-07-25/config.yaml',untracked_videos=all_videolists2,suffix=".mp4")

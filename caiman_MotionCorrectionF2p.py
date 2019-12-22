@@ -39,12 +39,6 @@ import pandas as pd
 #%% motion correction with concatenated videos
 videoconcat = sys.argv[1]
 newpath = os.path.dirname(videoconcat)
-ms_ts_name = os.path.join(newpath,"ms_ts.pkl")
-if os.path.exists(ms_ts_name):
-    with open(ms_ts_name, "rb") as f:
-        ms_ts= pickle.load(f)
-else:
-    print("there is no mt_ts.pkl existed")
 
 fnames=[videoconcat]
 m_orig = cm.load_movie_chain(fnames)
@@ -55,7 +49,7 @@ c, dview, n_processes = cm.cluster.setup_cluster(
     backend='local', n_processes=None, single_thread=False)
 
 # dataset dependent parameters
-fr = 10    # movie frame rate
+fr = 15    # movie frame rate
 decay_time = 0.4                 # length of a typical transient in seconds
 
 motion_correct = True            # flag for motion correction
@@ -101,7 +95,7 @@ if motion_correct:
         plt.legend(['x shifts', 'y shifts'])
         plt.xlabel('frames')
         plt.ylabel('pixels')
-	plt.savefig(newpath + r'/' + "shift.pdf",edgecolor='w',format='pdf',transparent=True)
+	#plt.savefig(newpath + r'/' + "shift.pdf",edgecolor='w',format='pdf',transparent=True)
 
     bord_px = 0 if border_nan is 'copy' else bord_px
     fname_new = cm.save_memmap(fname_mc, base_name='memmap_', order='C',

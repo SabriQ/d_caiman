@@ -9,7 +9,7 @@ mpl.use('Agg')
 import logging
 import matplotlib.pyplot as plt
 import numpy as np
-import glob
+
 logging.basicConfig(format=
                           "%(relativeCreated)12d [%(filename)s:%(funcName)20s():%(lineno)s] [%(process)d] %(message)s",
                     # filename="/tmp/caiman.log",
@@ -58,13 +58,13 @@ c, dview, n_processes = cm.cluster.setup_cluster(
 fr = 10    # movie frame rate
 decay_time = 0.4                 # length of a typical transient in seconds
 
-motion_correct = False            # flag for motion correction
+motion_correct = True            # flag for motion correction
 # motion correction parameters
 pw_rigid = False                # flag for pw-rigid motion correction
 
 gSig_filt = (8,8)   # size of filter, in general gSig (see below),
 #                      change this one if algorithm does not work
-max_shifts = (15,15)  # maximum allowed rigid shift
+max_shifts = (25,25)  # maximum allowed rigid shift
 strides = (96,96)  # start a new patch for pw-rigid motion correction every x pixels
 overlaps = (32,32)  # overlap between pathes (size of patch strides+overlaps)
 # maximum deviation allowed for patch with respect to rigid shifts
@@ -96,31 +96,29 @@ if motion_correct:
                                      np.max(np.abs(mc.y_shifts_els)))).astype(np.int)
     else:
         bord_px = np.ceil(np.max(np.abs(mc.shifts_rig))).astype(np.int)
-        #plt.subplot(1, 2, 1); plt.imshow(mc.total_template_rig)  # % plot template
-        #plt.subplot(1, 2, 2); plt.plot(mc.shifts_rig)  # % plot rigid shifts
-        #plt.legend(['x shifts', 'y shifts'])
-        #plt.xlabel('frames')
-        #plt.ylabel('pixels')
+        plt.subplot(1, 2, 1); plt.imshow(mc.total_template_rig)  # % plot template
+        plt.subplot(1, 2, 2); plt.plot(mc.shifts_rig)  # % plot rigid shifts
+        plt.legend(['x shifts', 'y shifts'])
+        plt.xlabel('frames')
+        plt.ylabel('pixels')
+        plt.savefig(newpath + r'/' + "shift.pdf",edgecolor='w',format='pdf',transparent=True)
 
     bord_px = 0 if border_nan is 'copy' else bord_px
-    fname_new = cm.save_memmap(fname_mc, base_name='memmap_', order='C',
-                               border_to_0=bord_px)
-else:  # if no motion correction just memory map the file
-    fname_mc = glob.glob(os.path.join(newpath,"msCam_concat*.mmap"))
-    bord_px = 0
     fname_new = cm.save_memmap(fname_mc, base_name='memmap_', order='C',border_to_0=bord_px)
+else:  # if no motion correction just memory map the file
+    fname_new = cm.save_memmap(filename_reorder, base_name='memmap_',
+                               order='C', border_to_0=0, dview=dview)
+
 print('Motion correction has been done!')
 m_els = cm.load(fname_mc)
 
-# save motion corrected video as mat/tiff/hdf5 file
+# save motion corrected video as mat file
 
 mc_name = os.path.join(newpath,"motioncorrected.tif")
-m_els.save(mc_name)
 #vid=np.array(m_els).astype('uint8')
-#try:
-#	from scipy.io import savemat
-#	savemat(mc_name,{'vid':vid},format="5",do_compression=True)
-#finally:
+#from scipy.io import savemat
+#savemat(mc_name,{'vid':vid},format="5",do_compression=True)
+m_els.save(mc_name)
 m_els.save(os.path.join(newpath,'ms_mc.avi'))
 del m_els
 cm.stop_server(dview=dview)
@@ -194,13 +192,20 @@ cn_filter, pnr = cm.summary_images.correlation_pnr(images[::5], gSig=gSig[0], sw
 # inspect the summary images and set the parameters
 #inspect_correlation_pnr(cn_filter, pnr)
 
-print(r">>>>>>>>>>start cnmf.CNMF")
+
 # source extraction
 cnm = cnmf.CNMF(n_processes=n_processes, dview=dview, Ain=Ain, params=opts)
 cnm.fit(images)
-print(r">>>>>>>>>>finish cnm.fit(images)")
 
+#cnm_estimates_name = os.path.join(newpath,"cnm_estimates.pkl")
 
+#if not os.path.exists(cnm_estimates_name):
+#    with open(cnm_estimates_name, "wb") as output:
+#        pickle.dump(cnm.estimates,output,pickle.HIGHEST_PROTOCOL)
+#else:
+#    with open(cnm_estimates_name,'rb') as f:
+#        cnm.estimates = pickle.load(f)
+# plt(cnm.estimates.C[0],cnm.estimates.C.dim
 old_RawTraces= cnm.estimates.C
 # plt.plot(old_C[0,:],'k')
 old_DeconvTraces = cnm.estimates.S
@@ -255,7 +260,7 @@ SFP = np.reshape(SFP.toarray(), SFP_dims, order='F')
 maxRawTraces = np.amax(RawTraces)
 plt.figure(figsize=(30,15))
 plt.subplot(341);
-#plt.subplot(345); plt.plot(mc.shifts_rig); plt.title('Motion corrected shifts')
+plt.subplot(345); plt.plot(mc.shifts_rig); plt.title('Motion corrected shifts')
 plt.subplot(3,4,9);
 plt.subplot(3,4,2); plt.imshow(cn_filter); plt.colorbar(); plt.title('Correlation projection')
 plt.subplot(3,4,6); plt.imshow(pnr); plt.colorbar(); plt.title('PNR')
