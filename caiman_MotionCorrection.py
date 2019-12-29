@@ -55,7 +55,7 @@ c, dview, n_processes = cm.cluster.setup_cluster(
     backend='local', n_processes=None, single_thread=False)
 
 # dataset dependent parameters
-fr = 10    # movie frame rate
+fr = 30    # movie frame rate
 decay_time = 0.4                 # length of a typical transient in seconds
 
 motion_correct = True            # flag for motion correction
@@ -100,8 +100,7 @@ if motion_correct:
         plt.subplot(1, 2, 2); plt.plot(mc.shifts_rig)  # % plot rigid shifts
         plt.legend(['x shifts', 'y shifts'])
         plt.xlabel('frames')
-        plt.ylabel('pixels')
-	plt.savefig(newpath + r'/' + "shift.pdf",edgecolor='w',format='pdf',transparent=True)
+        plt.ylabel('pixels');plt.savefig(newpath + r'/' + "shift.pdf",edgecolor='w',format='pdf',transparent=True)
 
     bord_px = 0 if border_nan is 'copy' else bord_px
     fname_new = cm.save_memmap(fname_mc, base_name='memmap_', order='C',

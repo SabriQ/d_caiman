@@ -37,9 +37,9 @@ import glob
 import re
 import os,sys
 animal_id = sys.argv[1]
-notes = '20191112'
-common_dir = os.path.join('/run/user/1000/gvfs/smb-share:server=10.10.46.135,share=share/Qiushou/12_Miniscope/Raw_data/20191111',animal_id,"H*M*S*")
-resultDir = '/home/qiushou/Documents/QS_data/miniscope/miniscope_result'
+notes = '20190905-0907'
+common_dir = os.path.join('/home/qiushou/Documents/CHS_data/miniscope/raw_data/2019090*',animal_id,"H*M*S*")
+resultDir = '/home/qiushou/Documents/CHS_data/miniscope/miniscope_results'
 msFileList = glob.glob(os.path.join(common_dir,"msCam*.avi"))
 tsFileList = glob.glob(os.path.join(common_dir,"timestamp.dat"))
 show_cropped_img = False 
@@ -167,14 +167,15 @@ if not os.path.exists(ms_ts_name):
     # remporally downsample for each video
     # [i[::3] for i in ts_session][0]
     session_indend=(np.where(np.diff(ttemp)<0)[0]).tolist()
-    session_indend.append(-1)
+#    session_indend.append(-1)
     ts_session_ds=[]
     i0=0
     session_indstart=[]
     for i in range(len(ts_session)):
         session_indstart.append(i0)
-        ts_session_ds.append(ttemp[i0:session_indend[i]])
+        ts_session_ds.append(ttemp[i0:(session_indend[i]+1)])
         i0=session_indend[i]+1
+    ts_session_ds.append(ttemp[(session_indend[-1]+1):])
     ms_ts=np.array(ts_session_ds)    
     with open(ms_ts_name,'wb') as output:
         pickle.dump(ms_ts,output,pickle.HIGHEST_PROTOCOL)
