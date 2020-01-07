@@ -106,9 +106,9 @@ if motion_correct:
     fname_new = cm.save_memmap(fname_mc, base_name='memmap_', order='C',
                                border_to_0=bord_px)
 else:  # if no motion correction just memory map the file
-    fname_mc = glob.glob(os.path.join(newpath,"msCam_concat*.mmap"))
     bord_px = 0
-    fname_new = cm.save_memmap(fname_mc, base_name='memmap_', order='C',border_to_0=bord_px)
+    #fname_new = cm.save_memmap(fnames, base_name='memmap_',order='C',border_to_0=bord_px)# there will be slightly different from using memmap* file
+    fname_new = glob.glob(os.path.join(newpath,"memmap*.mmap"))[0]# it will get the same result with the MotionCorrection_SourceExtraction.py 
 print('Motion correction has been done!')
 m_els = cm.load(fname_mc)
 

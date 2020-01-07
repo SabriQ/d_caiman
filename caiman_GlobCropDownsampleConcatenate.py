@@ -33,9 +33,10 @@ import glob
 import re
 import os,sys
 animal_id = sys.argv[1]
-notes = 'test_30fps'
-common_dir = os.path.join(r'/run/user/1000/gvfs/smb-share:server=10.10.46.135,share=data_archive/qiushou/miniscope/20191029',animal_id,"H*M*S*")
-resultDir = '/home/qiushou/Documents/QS_data/miniscope/miniscope_result'
+notes = '10fps'
+common_dir = os.path.join(r'/run/user/1000/gvfs/smb-share:server=10.10.46.135,share=share/ZhuXinyue/003_VR/003_2_Miniscope/AVI/20191225',animal_id)
+#common_dir = os.path.join(r'/run/user/1000/gvfs/smb-share:server=10.10.46.135,share=share/ZhuXinyue/003_VR/003_2_Miniscope/AVI/20191225',animal_id,"H*M*S*")
+resultDir = '/home/qiushou/Documents/ZXY_data/miniscope/miniscope_result'
 msFileList = glob.glob(os.path.join(common_dir,"msCam*.avi"))
 tsFileList = glob.glob(os.path.join(common_dir,"timestamp.dat"))
 show_cropped_img = False 
@@ -128,7 +129,7 @@ if not os.path.exists(newpath):
     os.makedirs(newpath)                    
 videoconcat=os.path.join(newpath,'msCam_concat.avi')
 spatial_downsampling=2
-temporal_downsampling=1
+temporal_downsampling=3
 cropped_clip_list=[]
 iframe=0
 for video in msFileList:
@@ -153,28 +154,39 @@ print(ms_ts_name)
 
 import pandas as pd
 import pickle
+
 if not os.path.exists(ms_ts_name):
     ts_session=[]
     for tsFile in tsFileList:
         datatemp=pd.read_csv(tsFile,sep = "\t", header = 0)
         ts_session.append(datatemp['sysClock'].values)    
     ttemp=np.hstack(ts_session)[::temporal_downsampling]
-    # remporally downsample for each video
-    # [i[::3] for i in ts_session][0]
     session_indend=(np.where(np.diff(ttemp)<0)[0]).tolist()
-    session_indend.append(-1)
     ts_session_ds=[]
     i0=0
     session_indstart=[]
-    for i in range(len(ts_session)):
-        session_indstart.append(i0)
-        ts_session_ds.append(ttemp[i0:session_indend[i]])
-        i0=session_indend[i]+1
+    if len(session_indend)>0:
+        for i in range(len(session_indend)):
+            session_indstart.append(i0)
+            ts_session_ds.append(ttemp[i0:(session_indend[i]+1)])
+            i0=session_indend[i]+1
+        ts_session_ds.append(ttemp[(session_indend[-1]+1):])
+    else:
+        ts_session_ds.append(ttemp[i0:])
     ms_ts=np.array(ts_session_ds)    
     with open(ms_ts_name,'wb') as output:
         pickle.dump(ms_ts,output,pickle.HIGHEST_PROTOCOL)
 else:
     with open(ms_ts_name, "rb") as f:
         ms_ts= pickle.load(f)
-#print(f'concatenated timestamp of miniscope_video is located at {ms_ts_name}')
+
+timestamps_frames = sum([len(i) for i in ms_ts])
+cap = cv2.VideoCapture(videoconcat)
+concated_video_frames = int(cap.get(7))
+cap.release()
+if timestamps_frames == concated_video_frames:
+    print("concatenated video and timestamps have the same frames")
+else:
+    print(f"Attention: concatenated video {concated_video_frames}frames and timestamps {timestamps_frames}frames have different frames")
+print(f'concatenated timestamp of miniscope_video is located at {ms_ts_name}')
 
